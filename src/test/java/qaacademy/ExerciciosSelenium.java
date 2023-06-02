@@ -48,7 +48,14 @@ public class ExerciciosSelenium {
 
         //Selecionar lista
         driver.findElement(By.xpath("//*[@id='msdd']")).click();
-        driver.findElement(By.xpath("//a[contains(text(), 'Ukrainian')]")).click();
+        driver.findElement(By.xpath("//a[contains(text(), 'Portuguese')]")).click();
+        driver.findElement(By.xpath("//a[contains(text(), 'English')]")).click();
+        
+
+boolean LinguagemPortuguesSelecionada = driver
+        //Validando que Portugues e English foram selecionados e exibidos
+        Assert.assertTrue(driver.findElement(By.xpath("//div[contains(text(),'Portuguese') and @class='ui-autocomplete-multiselect-item']")).isDisplayed());
+        Assert.assertTrue(driver.findElement(By.xpath("//div[contains(text(),'English') and @class='ui-autocomplete-multiselect-item']")).isDisplayed());
     }
 
     @AfterClass
