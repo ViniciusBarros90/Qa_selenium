@@ -1,7 +1,10 @@
 package qaacademy;
 
+import java.util.concurrent.TimeUnit;
+
 import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -9,95 +12,100 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.Select;
 
 public class ExerciciosSelenium {
-    static WebDriver driver;
+        static WebDriver driver;
 
-    @Test
-    public void testesFormularioSelenium() throws InterruptedException {
-        driver = new ChromeDriver(); // Abrir o Browser
-        driver.get("http://demo.automationtesting.in/Register.html");
-        Thread.sleep(3000);
+        @Before
+        public void before() throws InterruptedException {
+                driver = new ChromeDriver(); // Abrir o Browser
+                driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+                driver.manage().window().maximize();
+                driver.get("http://demo.automationtesting.in/Register.html");
+        }
 
-        // First Name
-        driver.findElement(By.xpath("//*[@placeholder='First Name']")).sendKeys("Vinicius");
+        @Test
+        public void testesFormularioSelenium() throws InterruptedException {
+                // First Name
+                driver.findElement(By.xpath("//*[@placeholder='First Name']")).sendKeys("Vinicius");
+                // Last Name
+                driver.findElement(By.xpath("//*[@placeholder='Last Name']")).sendKeys("Barros");
+                // Adress
+                driver.findElement(By.xpath("//*[@ng-model='Adress']")).sendKeys("Rua Selenium");
+                // Email Adress
+                driver.findElement(By.xpath("//*[@ng-model='EmailAdress']")).sendKeys("teste@teste.com.br");
+                // Phone
+                driver.findElement(By.xpath("//*[@ng-model='Phone']")).sendKeys("1139998577");
 
-        // Last Name
-        driver.findElement(By.xpath("//*[@placeholder='Last Name']")).sendKeys("Barros");
+                // Selecionando o radio buttom "Gender" = combobox
+                driver.findElement(By.xpath("//*[@ng-model='radiovalue' and @value='Male']")).click();
+                // Validando que o radio buttom "Gender" foi selecionado
+                Assert.assertTrue("Elemento não selecionado",
+                                driver.findElement(By.xpath("//*[@ng-model='radiovalue' and @value='Male']"))
+                                                .isSelected());
 
-        // Adress
-        driver.findElement(By.xpath("//*[@ng-model='Adress']")).sendKeys("Rua Selenium");
+                // Selecionando o Checkbox "Movies"
+                driver.findElement(By.xpath("//input[@value='Movies']")).click();
+                // Validando que o radio o Checkbox "Movies" foi selecionado
+                Assert.assertTrue("Checkbox não selecionado",
+                                driver.findElement(By.xpath("//input[@value='Movies']")).isSelected());
 
-        // Email Adress
-        driver.findElement(By.xpath("//*[@ng-model='EmailAdress']")).sendKeys("teste@teste.com.br");
+                driver.findElement(By.xpath("//*[@id='msdd']")).click();
 
-        // Phone
-        driver.findElement(By.xpath("//*[@ng-model='Phone']")).sendKeys("39998577");
+                // Selecionar lista <li>
+                driver.findElement(By.xpath("//*[@id='msdd']")).click();
+                driver.findElement(By.xpath("//a[contains(text(), 'Portuguese')]")).click();
+                driver.findElement(By.xpath("//a[contains(text(), 'English')]")).click();
 
-        // Selecionando o radio buttom "Gender" = combobox
-        driver.findElement(By.xpath("//*[@ng-model='radiovalue' and @value='Male']")).click();
-        // Validando que o radio buttom "Gender" foi selecionado
-        Assert.assertTrue("Elemento não selecionado",
-                driver.findElement(By.xpath("//*[@ng-model='radiovalue' and @value='Male']")).isSelected());
+                // Validando que Portugues e English foram selecionados e exibidos
+                boolean LinguagemPortuguesSelecionada = driver
+                                .findElement(
+                                                By.xpath("//div[contains(text(),'Portuguese') and @class='ui-autocomplete-multiselect-item']"))
+                                .isDisplayed();
 
-        // Selecionando o Checkbox "Movies"
-        driver.findElement(By.xpath("//input[@value='Movies']")).click();
-        // Validando que o radio o Checkbox "Movies" foi selecionado
-        Assert.assertTrue("Checkbox não selecionado",
-                driver.findElement(By.xpath("//input[@value='Movies']")).isSelected());
+                boolean LinguagemEnglishSelecionada = driver
+                                .findElement(
+                                                By.xpath("//div[contains(text(),'English') and @class='ui-autocomplete-multiselect-item']"))
+                                .isDisplayed();
+                Assert.assertTrue(LinguagemPortuguesSelecionada && LinguagemEnglishSelecionada);
 
-        driver.findElement(By.xpath("//*[@id='msdd']")).click();
-        Thread.sleep(2000);
+                // Selecionando o item "Java" na lista "Skills" do tipo option
+                Select selectObject = new Select(driver.findElement(By.xpath("//select[@id='Skills']")));
+                selectObject.selectByVisibleText("Java");
 
-        // Selecionar lista <li>
-        driver.findElement(By.xpath("//*[@id='msdd']")).click();
-        driver.findElement(By.xpath("//a[contains(text(), 'Portuguese')]")).click();
-        Thread.sleep(2000);
-        driver.findElement(By.xpath("//a[contains(text(), 'English')]")).click();
+                // Selecionando item na lista "Select Countryn"
+                driver.findElement(By.xpath(
+                                "//body/section[@id='section']/div[1]/div[1]/div[2]/form[1]/div[10]/div[1]/span[1]/span[1]/span[1]"))
+                                .click();
+                driver.findElement(By.xpath("//li[contains(text(),'United States of America')]")).click();
 
-        // Validando que Portugues e English foram selecionados e exibidos
-        boolean LinguagemPortuguesSelecionada = driver
-                .findElement(
-                        By.xpath("//div[contains(text(),'Portuguese') and @class='ui-autocomplete-multiselect-item']"))
-                .isDisplayed();
+                // Selecionando a data na lista "Date Of Birth" do tipo option
+                Select selectAnoAniversario = new Select(driver.findElement(By.xpath("//select[@id='yearbox']")));
+                selectAnoAniversario.selectByVisibleText("1988");
+                Select selectMes = new Select(driver.findElement(
+                                By.xpath(" //body/section[@id='section']/div[1]/div[1]/div[2]/form[1]/div[11]/div[2]/select[1]")));
+                selectMes.selectByVisibleText("April");
+                Select selectDia = new Select(driver.findElement(By.xpath("//select[@id='daybox']")));
+                selectDia.selectByVisibleText("15");
 
-        boolean LinguagemEnglishSelecionada = driver
-                .findElement(
-                        By.xpath("//div[contains(text(),'English') and @class='ui-autocomplete-multiselect-item']"))
-                .isDisplayed();
-        Assert.assertTrue(LinguagemPortuguesSelecionada && LinguagemEnglishSelecionada);
+                // Preenchendo o campo Password e Confirm Password
+                driver.findElement(By.xpath("//input[@id='firstpassword']")).sendKeys("Teste");
+                driver.findElement(By.xpath("//input[@id='secondpassword']")).sendKeys("Teste");
+                // Clicar em Submit
+                driver.findElement(By.xpath("//button[@id='submitbtn']")).click();
 
-        // Selecionando o item "Java" na lista "Skills" do tipo option
-        Select selectObject = new Select(driver.findElement(By.xpath("//select[@id='Skills']")));
-        selectObject.selectByVisibleText("Java");
-        Thread.sleep(3000);
+                String msgErroTelefone = "Portuguese";
+                Assert.assertTrue("Linguagem não está presente", driver.getPageSource().contains(msgErroTelefone));
+        }
 
-        // Selecionando item na lista "Select Countryn"
-        driver.findElement(By.xpath(
-                "//body/section[@id='section']/div[1]/div[1]/div[2]/form[1]/div[10]/div[1]/span[1]/span[1]/span[1]"))
-                .click();
-        driver.findElement(By.xpath("//li[contains(text(),'United States of America')]")).click();
-        Thread.sleep(2000);
-        // Selecionando a data na lista "Date Of Birth" do tipo option
+        @Test
+        public void TestesFormularioSelenium(){
 
-        Select selectAnoAniversario = new Select(driver.findElement(By.xpath("//select[@id='yearbox']")));
-        selectAnoAniversario.selectByVisibleText("1988");
-        Select selectMes = new Select(driver.findElement(
-                By.xpath(" //body/section[@id='section']/div[1]/div[1]/div[2]/form[1]/div[11]/div[2]/select[1]")));
-        selectMes.selectByVisibleText("April");
-        Select selectDia = new Select(driver.findElement(By.xpath("//select[@id='daybox']")));
-        selectDia.selectByVisibleText("15");
 
-        // Preenchendo o campo Password e Confirm Password
-        driver.findElement(By.xpath("//input[@id='firstpassword']")).sendKeys("Teste");
-        driver.findElement(By.xpath("//input[@id='secondpassword']")).sendKeys("Teste");
-        // Clicar em Submit
-        driver.findElement(By.xpath("//button[@id='submitbtn']")).click();
+                
+        }
 
-    }
+        @AfterClass
+        public static void after() throws InterruptedException {
+                driver.quit();
 
-    @AfterClass
-    public static void after() throws InterruptedException {
-        Thread.sleep(3000);
-        driver.quit();
-
-    }
+        }
 }

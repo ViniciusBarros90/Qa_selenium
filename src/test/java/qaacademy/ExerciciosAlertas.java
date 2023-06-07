@@ -19,8 +19,10 @@ public class ExerciciosAlertas {
         driver = new ChromeDriver();
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
         driver.get(("http://demo.automationtesting.in/Alerts.html"));
-
     }
+
+    
+
 
     @Test
     public void TestesAlertaSimples() {
