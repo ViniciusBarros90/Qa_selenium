@@ -1,3 +1,4 @@
 target
 .vscode/
 chromedriver.exe
+output/
